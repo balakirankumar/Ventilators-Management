@@ -98,6 +98,13 @@ app.post('/addhospital',(req,res)=>{
     });
 });
 
+app.get('/searchventbystatusinhospital', middleware.checkToken, (req,res) => {
+    const status = req.query.status;
+    const name=req.query.name;
+    console.log("Searching in "+name+" hospital for status" +status);
+    const ventillatordetails=db.collection('ventilators').find({"status":status,"name":name}).toArray().then(result=>res.json(result));
+});
+
 
 app.listen(1100,(req,res)=>{
     console.log("working well");
