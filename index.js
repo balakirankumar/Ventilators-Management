@@ -91,11 +91,21 @@ app.delete('/deleteventilator', middleware.checkToken, (req,res) => {
 app.post('/addhospital',(req,res)=>{
     const hid=req.query.hid;
     const name=req.query.name;
-    console.log("adding ventilator, please wait a moment");
+    console.log("adding Hospital, please wait a moment");
     const item={"hid":hid, "name":name};
     db.collection("hospital").insertOne(item, function(err, result){
         res.json(" Hospital inserted successfully");
     });
+});
+
+app.delete('/deletehospital', middleware.checkToken, (req,res) => {
+    const hid=req.query.hid;
+    const temp={"hid":hid};
+    db.collection("hospital").deleteOne(temp, function(err,obj){
+        if(err) throw err;
+        res.json("deleted one element");
+    });
+    console.log("Hopital with "+hid+" got Deleted");
 });
 
 app.get('/searchventbystatusinhospital', middleware.checkToken, (req,res) => {
