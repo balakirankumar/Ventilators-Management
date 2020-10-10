@@ -111,8 +111,14 @@ app.delete('/deletehospital', middleware.checkToken, (req,res) => {
 app.get('/searchventbystatusinhospital', middleware.checkToken, (req,res) => {
     const status = req.query.status;
     const name=req.query.name;
-    console.log("Searching in "+name+" hospital for status" +status);
+    console.log("Searching in "+name+" hospital for status " +status);
     const ventillatordetails=db.collection('ventilators').find({"status":status,"name":name}).toArray().then(result=>res.json(result));
+});
+
+app.get('/searchhospitalbylocation', middleware.checkToken, (req,res) => {
+    const location=req.query.location;
+    console.log("Searching in "+location+" location for hospital ");
+    const ventillatordetails=db.collection('ventilators').find({"location":location}).toArray().then(result=>res.json(result));
 });
 
 
