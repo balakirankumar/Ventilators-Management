@@ -1,3 +1,6 @@
+//All API's be here
+//API's.JS
+
 const express=require('express');
 const app=express();
 const bodyParser = require('body-parser');
@@ -15,6 +18,7 @@ const url='mongodb://127.0.0.1:27017';
 const dbname="hospitalDetails";
 let db
 
+//Connecting to Mongodb.
 MongoClient.connect(url,(err,client)=>{
     if(err) return console.log(err);
     db=client.db(dbname);
@@ -22,18 +26,21 @@ MongoClient.connect(url,(err,client)=>{
     console.log(`Database:${dbname}`);
 });
 
+//Get hospital details.
 app.get('/hospitals', middleware.checkToken, (req,res)=>{
     console.log("getting things ready");
     const data=db.collection("hospital").find().toArray()
     .then(result => res.json(result));
 });
 
+//Get ventilators details.
 app.get('/ventilators', middleware.checkToken, (req,res)=>{
     console.log("getting things ready");
     const data=db.collection("ventilators").find().toArray()
     .then(result=>(res.json(result)));
 });
 
+//Get ventilators by status.
 app.post('/searchventbystatus', middleware.checkToken, (req,res) => {
     const status = req.query.status;
     console.log(status);
@@ -41,6 +48,7 @@ app.post('/searchventbystatus', middleware.checkToken, (req,res) => {
     .find({"status":status}).toArray().then(result=>res.json(result));
 });
 
+//Get ventilators by hospital's name.
 app.post('/searchventbyname', middleware.checkToken, (req,res) => {
     const name=req.query.name;
     console.log(name);
@@ -48,6 +56,7 @@ app.post('/searchventbyname', middleware.checkToken, (req,res) => {
     .find({'name':new RegExp(name, 'i')}).toArray().then(result=>res.json(result));
 });
 
+//Search hospitals by name.
 app.post('/searchhospitals', middleware.checkToken, (req,res) => {
     const name=req.query.name;
     console.log(name);
@@ -55,6 +64,7 @@ app.post('/searchhospitals', middleware.checkToken, (req,res) => {
     .find({'name':new RegExp(name, 'i')}).toArray().then(result=>res.json(result));
 });
 
+//Add ventilators.
 app.post('/addventilator',(req,res)=>{
     const hid=req.query.hid;
     const ventid=req.query.ventid;
@@ -67,6 +77,7 @@ app.post('/addventilator',(req,res)=>{
     });
 });
 
+//Update ventilators by ventilator id.
 app.put('/updateventilator', middleware.checkToken, (req,res) => {
     const ventid= {ventid: req.query.ventid};
     console.log(ventid);
@@ -78,6 +89,7 @@ app.put('/updateventilator', middleware.checkToken, (req,res) => {
     });
 });
 
+//delete ventilators by ventilator id.
 app.delete('/deleteventilator', middleware.checkToken, (req,res) => {
     const ventid=req.query.ventid;
     console.log(ventid);
@@ -88,6 +100,7 @@ app.delete('/deleteventilator', middleware.checkToken, (req,res) => {
     });
 });
 
+//Add hospital.
 app.post('/addhospital',(req,res)=>{
     const hid=req.query.hid;
     const name=req.query.name;
@@ -98,6 +111,7 @@ app.post('/addhospital',(req,res)=>{
     });
 });
 
+//Delete hospital.
 app.delete('/deletehospital', middleware.checkToken, (req,res) => {
     const hid=req.query.hid;
     const temp={"hid":hid};
@@ -108,6 +122,7 @@ app.delete('/deletehospital', middleware.checkToken, (req,res) => {
     console.log("Hopital with "+hid+" got Deleted");
 });
 
+//Search by ventilators status in specified hospital.
 app.get('/searchventbystatusinhospital', middleware.checkToken, (req,res) => {
     const status = req.query.status;
     const name=req.query.name;
@@ -115,10 +130,11 @@ app.get('/searchventbystatusinhospital', middleware.checkToken, (req,res) => {
     const ventillatordetails=db.collection('ventilators').find({"status":status,"name":name}).toArray().then(result=>res.json(result));
 });
 
+//Search hospitals by location.
 app.get('/searchhospitalbylocation', middleware.checkToken, (req,res) => {
     const location=req.query.location;
     console.log("Searching in "+location+" location for hospital ");
-    const ventillatordetails=db.collection('ventilators').find({"location":location}).toArray().then(result=>res.json(result));
+    const ventillatordetails=db.collection('hospital').find({"location":location}).toArray().then(result=>res.json(result));
 });
 
 
