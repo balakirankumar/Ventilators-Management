@@ -28,22 +28,22 @@ MongoClient.connect(url,(err,client)=>{
 
 //Get hospital details.
 app.get('/hospitals', middleware.checkToken, (req,res)=>{
-    console.log("getting things ready");
-    const data=db.collection("hospital").find().toArray()
+    console.log("All hospital details are given");
+    const data=db.collection("hospital").find().sort({'hid':1}).toArray()
     .then(result => res.json(result));
 });
 
 //Get ventilators details.
 app.get('/ventilators', middleware.checkToken, (req,res)=>{
-    console.log("getting things ready");
-    const data=db.collection("ventilators").find().toArray()
+    console.log("All ventilator details are given");
+    const data=db.collection("ventilators").find().sort({'hid':1}).toArray()
     .then(result=>(res.json(result)));
 });
 
 //Get ventilators by status.
 app.post('/searchventbystatus', middleware.checkToken, (req,res) => {
     const status = req.query.status;
-    console.log(status);
+    console.log(`Searching for ventilators of status : ${status}.`);
     const ventillatordetails=db.collection('ventilators')
     .find({"status":status}).toArray().then(result=>res.json(result));
 });
@@ -51,7 +51,7 @@ app.post('/searchventbystatus', middleware.checkToken, (req,res) => {
 //Get ventilators by hospital's name.
 app.post('/searchventbyname', middleware.checkToken, (req,res) => {
     const name=req.query.name;
-    console.log(name);
+    console.log(`Searching ventilators by hospital : ${name}.`);
     const ventilatordeatils=db.collection('ventilators')
     .find({'name':new RegExp(name, 'i')}).toArray().then(result=>res.json(result));
 });
@@ -59,7 +59,7 @@ app.post('/searchventbyname', middleware.checkToken, (req,res) => {
 //Search hospitals by name.
 app.post('/searchhospitals', middleware.checkToken, (req,res) => {
     const name=req.query.name;
-    console.log(name);
+    console.log(`Searching hospital for : ${name}`);
     const ventilatordeatils=db.collection('hospital')
     .find({'name':new RegExp(name, 'i')}).toArray().then(result=>res.json(result));
 });
@@ -70,7 +70,7 @@ app.post('/addventilator',(req,res)=>{
     const ventid=req.query.ventid;
     const status=req.query.status;
     const name=req.query.name;
-    console.log("adding ventilator, please wait a moment");
+    console.log(`Adding ventilator in hospital :${name}.`);
     const item={"hid":hid, "ventid":ventid, "status":status, "name":name};
     db.collection("ventilators").insertOne(item, function(err, result){
         res.json("inserted successfully");
@@ -82,7 +82,7 @@ app.put('/updateventilator', middleware.checkToken, (req,res) => {
     const ventid= {ventid: req.query.ventid};
     console.log(ventid);
     const newvalues={$set: {status:req.query.status}};
-    console.log("updating ventilator details, please wait a moment");
+    console.log(`Updating the status of ventilator of from ${ventid} to ${req.query.status}`);
     db.collection("ventilators").updateOne(ventid, newvalues, function(err, result){
         res.json('updated one document');
         if(err) throw err;
@@ -92,7 +92,7 @@ app.put('/updateventilator', middleware.checkToken, (req,res) => {
 //delete ventilators by ventilator id.
 app.delete('/deleteventilator', middleware.checkToken, (req,res) => {
     const ventid=req.query.ventid;
-    console.log(ventid);
+    console.log(`Deleting ventilator of id ${ventid}`);
     const temp={"ventid":ventid};
     db.collection("ventilators").deleteOne(temp, function(err,obj){
         if(err) throw err;
@@ -104,8 +104,9 @@ app.delete('/deleteventilator', middleware.checkToken, (req,res) => {
 app.post('/addhospital',(req,res)=>{
     const hid=req.query.hid;
     const name=req.query.name;
-    console.log("adding Hospital, please wait a moment");
-    const item={"hid":hid, "name":name};
+    const location = req.query.location;
+    console.log(`Adding hospital of hid :${hid} and name : ${name}`);
+    const item={"hid":hid, "name":name,"location":location};
     db.collection("hospital").insertOne(item, function(err, result){
         res.json(" Hospital inserted successfully");
     });
@@ -115,29 +116,29 @@ app.post('/addhospital',(req,res)=>{
 app.delete('/deletehospital', middleware.checkToken, (req,res) => {
     const hid=req.query.hid;
     const temp={"hid":hid};
+    console.log("Hopital with "+hid+" got Deleted");
     db.collection("hospital").deleteOne(temp, function(err,obj){
         if(err) throw err;
         res.json("deleted one element");
     });
-    console.log("Hopital with "+hid+" got Deleted");
 });
 
 //Search by ventilators status in specified hospital.
 app.get('/searchventbystatusinhospital', middleware.checkToken, (req,res) => {
     const status = req.query.status;
     const name=req.query.name;
-    console.log("Searching in "+name+" hospital for status " +status);
+    console.log(`Searching for hospital : ${name} for which ventilator status :${status}`);
     const ventillatordetails=db.collection('ventilators').find({"status":status,"name":name}).toArray().then(result=>res.json(result));
 });
 
 //Search hospitals by location.
 app.get('/searchhospitalbylocation', middleware.checkToken, (req,res) => {
     const location=req.query.location;
-    console.log("Searching in "+location+" location for hospital ");
+    console.log(`Searching for hospitals at ${location}.`);
     const ventillatordetails=db.collection('hospital').find({"location":location}).toArray().then(result=>res.json(result));
 });
 
-
+//api's work on port 1100
 app.listen(1100,(req,res)=>{
     console.log("working well");
 });
