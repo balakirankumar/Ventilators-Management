@@ -38,7 +38,19 @@ jobs:
       uses: github/super-linter@v4.8.5
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+        
+        
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: yarn
+    - name: Run ESLint
+      run: eslint . --ext .js,.jsx,.ts,.tsx
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     
     
     
