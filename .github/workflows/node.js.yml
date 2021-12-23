@@ -47,7 +47,7 @@ jobs:
     - name: Install modules
       run: yarn
     - name: Run ESLint
-      run: eslint . .js
+      run: eslint  .js
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
