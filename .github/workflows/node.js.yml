@@ -29,7 +29,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    - run: eslint . --ext .js,.jsx,.ts,.tsx
+   
   lint:
 
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
     - name: Install modules
       run: yarn
     - name: Run ESLint
-      run: eslint . --ext .js,.jsx,.ts,.tsx
+      run: eslint . .js
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
