@@ -29,6 +29,13 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+  
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: stefanoeb/eslint-action@1.0.2
+
    
   lint:
 
@@ -40,17 +47,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
         
-  eslint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install modules
-      run: yarn
-    - name: Run ESLint
-      run: eslint  .js
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    
-    
-    
+  
